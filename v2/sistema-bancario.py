@@ -7,7 +7,7 @@ def menu():
         [d]\tDepositar
         [s]\tSacar
         [e]\tExtrato
-        [t]\tTransferência
+        #[t]\tTransferência
         [nc]\tNova Conta
         [lc]\tListar Contas
         [nu]\tNovo Usuário 
@@ -81,19 +81,39 @@ def criar_usuario(usuarios):
     data_nascimento = input("Informe sua data de nascimento (dd-mm-aaaa): ")
     endereco = input("Informe o seu endereço (logradouro, nº - bairro - cidade/sigla estado): ")
 
-    usuarios.append("nome":nome, "data_nascimento": data_nascimento, "cpf": cpf, "endereco": endereco)
+    usuarios.append({"nome":nome, "data_nascimento": data_nascimento, "cpf": cpf, "endereco": endereco})
 
     print("Usuário criado com sucesso")
 
 def filtrar_usuario(cpf, usuarios):
 
-    usuarios_filtrado = [usuario for usuario in usuarios if usuario["cpf"] == cpf]
+    usuarios_filtrados = [usuario for usuario in usuarios if usuario["cpf"] == cpf]
     return usuarios_filtrados[0] if usuarios_filtrados else None
+
+def criar_conta(agencia, numero_conta, usuarios):
+    cpf = input("Informe o CPF (somente números): ")
+    usuario = filtrar_usuario(cpf, usuarios)
+
+    if usuario:
+        print("\nConta criada com sucesso!")
+        return {"agencia": agencia, "numero_conta": numero_conta, "usuario": usuario}
+    
+    print("Usuário não encontrado, processo finalizado!")
+
+def listar_contas(contas):
+    for conta in contas:
+        linha = f"""\
+            Agência:\t{conta["agencia"]}
+            C/C:\t\t{conta["numero_conta"]}
+            Titular:\t{conta["usuario"]["nome"]}
+        """
+        print("=" * 100)
+        print(textwrap.dedent(linha))
 
 def main():
 
     LIMITE_SAQUES = 3
-    LIMITE_TRANSFERENCIAS = 3
+    #LIMITE_TRANSFERENCIAS = 3
     AGENCIA = "0001"
 
     saldo = 0
@@ -103,6 +123,7 @@ def main():
     numero_transferencias = 0
     usuarios = []
     contas = []
+    #numero_conta = 1
 
     while True:
 
@@ -140,6 +161,7 @@ def main():
 
             if conta:
                 contas.append(conta)
+                #numero_conta += 1
 
         elif opcao == "lc":
 
